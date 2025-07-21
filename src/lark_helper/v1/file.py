@@ -2,11 +2,11 @@ import logging
 
 import requests
 
+from lark_helper.constants.file import JOB_STATUS_ERROR_MAP
 from lark_helper.exception import ImportTaskError
+from lark_helper.models.file import ImportTaskResult, TmpDownloadUrl
 from lark_helper.token_manager import TenantAccessTokenManager
 from lark_helper.utils.request import make_lark_request
-from lark_helper.v1.constants.file import JOB_STATUS_ERROR_MAP
-from lark_helper.v1.models.file import ImportTaskResult, TmpDownloadUrl
 
 logger = logging.getLogger(__name__)
 
@@ -22,10 +22,9 @@ def get_message_resource(
     https://open.feishu.cn/document/server-docs/im-v1/message/get-2
     """
     url = f"https://open.feishu.cn/open-apis/im/v1/messages/{message_id}/resources/{file_key}"
-    token = token_manager.get_tenant_access_token()
     headers = {
         "Content-Type": "application/json; charset=utf-8",
-        "Authorization": f"Bearer {token}",
+        "Authorization": f"Bearer {token_manager.get_tenant_access_token()}",
     }
     params = {"type": type_}
 

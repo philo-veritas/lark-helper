@@ -2,20 +2,20 @@ from typing import Any, TypeVar
 
 from pydantic import BaseModel
 
-from lark_helper.token_manager import TenantAccessTokenManager
-from lark_helper.utils.request import make_lark_request
-from lark_helper.v1.models.biatable import (
+from lark_helper.models.biatable import (
     BitableRecord,
     BitableSearchResponseData,
     BitableViewResponseData,
     FilterCondition,
     SortCondition,
 )
+from lark_helper.token_manager import TenantAccessTokenManager
+from lark_helper.utils.async_request import async_make_lark_request
 
 T = TypeVar("T", bound=BaseModel)
 
 
-def add_bitable_record(
+async def async_add_bitable_record(
     token_manager: TenantAccessTokenManager,
     app_token: str,
     table_id: str,
@@ -25,21 +25,21 @@ def add_bitable_record(
     多维表格-新增记录
     https://open.feishu.cn/document/server-docs/docs/bitable-v1/app-table-record/create
     """
-    token = token_manager.get_tenant_access_token()
-
     url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records"
     headers = {
         "Content-Type": "application/json; charset=utf-8",
-        "Authorization": f"Bearer {token}",
+        "Authorization": f"Bearer {await token_manager.async_get_tenant_access_token()}",
     }
     payload = {
         "fields": fields,
     }
 
-    return make_lark_request(method="POST", url=url, headers=headers, data=payload)
+    return await async_make_lark_request(
+        method="POST", url=url, headers=headers, data=payload
+    )
 
 
-def update_bitable_record(
+async def async_update_bitable_record(
     token_manager: TenantAccessTokenManager,
     app_token: str,
     table_id: str,
@@ -50,21 +50,21 @@ def update_bitable_record(
     多维表格-更新记录
     https://open.feishu.cn/document/server-docs/docs/bitable-v1/app-table-record/update
     """
-    token = token_manager.get_tenant_access_token()
-
     url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records/{record_id}"
     headers = {
         "Content-Type": "application/json; charset=utf-8",
-        "Authorization": f"Bearer {token}",
+        "Authorization": f"Bearer {await token_manager.async_get_tenant_access_token()}",
     }
     payload = {
         "fields": fields,
     }
 
-    return make_lark_request(method="PUT", url=url, headers=headers, data=payload)
+    return await async_make_lark_request(
+        method="PUT", url=url, headers=headers, data=payload
+    )
 
 
-def search_bitable_record_page(
+async def async_search_bitable_record_page(
     token_manager: TenantAccessTokenManager,
     app_token: str,
     table_id: str,
@@ -80,12 +80,10 @@ def search_bitable_record_page(
     多维表格-记录-查询记录
     https://open.feishu.cn/document/docs/bitable-v1/app-table-record/search
     """
-    token = token_manager.get_tenant_access_token()
-
     url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records/search"
     headers = {
         "Content-Type": "application/json; charset=utf-8",
-        "Authorization": f"Bearer {token}",
+        "Authorization": f"Bearer {await token_manager.async_get_tenant_access_token()}",
     }
     payload = {}
     if view_id:
@@ -107,7 +105,7 @@ def search_bitable_record_page(
     def extract_page_result(data):
         return BitableSearchResponseData.model_validate(data)
 
-    return make_lark_request(
+    return await async_make_lark_request(
         method="POST",
         url=url,
         headers=headers,
@@ -117,7 +115,7 @@ def search_bitable_record_page(
     )
 
 
-def search_all_bitable_records(
+async def async_search_all_bitable_records(
     token_manager: TenantAccessTokenManager,
     app_token: str,
     table_id: str,
@@ -151,7 +149,7 @@ def search_all_bitable_records(
     has_more = True
     page_token = None
     while has_more:
-        resp_data = search_bitable_record_page(
+        resp_data = await async_search_bitable_record_page(
             token_manager=token_manager,
             app_token=app_token,
             table_id=table_id,
@@ -170,7 +168,7 @@ def search_all_bitable_records(
     return all_items
 
 
-def list_bitable_views_page(
+async def async_list_bitable_views_page(
     token_manager: TenantAccessTokenManager,
     app_token: str,
     table_id: str,
@@ -183,12 +181,12 @@ def list_bitable_views_page(
     url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/views"
     headers = {
         "Content-Type": "application/json; charset=utf-8",
-        "Authorization": f"Bearer {token_manager.get_tenant_access_token()}",
+        "Authorization": f"Bearer {await token_manager.async_get_tenant_access_token()}",
     }
 
     def extract_views_result(data):
         return BitableViewResponseData.model_validate(data)
 
-    return make_lark_request(
+    return await async_make_lark_request(
         method="GET", url=url, headers=headers, data_extractor=extract_views_result
     )

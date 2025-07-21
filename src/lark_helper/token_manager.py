@@ -1,6 +1,8 @@
 import logging
 import time
+from typing import Any, Dict
 
+from lark_helper.utils.async_request import async_make_lark_request
 from lark_helper.utils.request import make_lark_request
 
 logger = logging.getLogger(__name__)
@@ -49,4 +51,39 @@ class TenantAccessTokenManager:
             data=payload,
             data_extractor=extract_token_info,
             use_root_response=True,
+        )
+
+    async def async_get_tenant_access_token(self) -> str:
+        """
+        Get a valid tenant access token.
+
+        If a valid token is cached, return it. Otherwise, fetch a new one.
+
+        Returns:
+            Tenant access token
+        """
+        current_time = time.time()
+
+        # If token is expired or not set, fetch a new one
+        if not self._token or current_time >= self._token_expire_time:
+            token_data = await self._async_fetch_tenant_access_token()
+            self._token = token_data["tenant_access_token"]
+            # Set expiry time with a 5-minute buffer
+            self._token_expire_time = current_time + token_data["expire"] - 300
+
+        return self._token
+
+    async def _async_fetch_tenant_access_token(self) -> Dict[str, Any]:
+        """
+        Fetch a new tenant access token from the Lark API.
+
+        Returns:
+            Token data including tenant_access_token and expire
+        """
+        url = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
+        headers = {"Content-Type": "application/json; charset=utf-8"}
+        data = {"app_id": self.app_id, "app_secret": self.app_secret}
+
+        return await async_make_lark_request(
+            "POST", url, headers, data=data, use_root_response=True
         )
