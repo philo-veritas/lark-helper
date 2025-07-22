@@ -2,16 +2,16 @@ import logging
 import time
 
 from lark_helper.token_manager import TenantAccessTokenManager
-from lark_helper.v1.file import (
-    create_import_task,
-    get_import_task_result,
-    upload_media_to_cloud_doc,
+from lark_helper.v1_async.file import (
+    async_create_import_task,
+    async_get_import_task_result,
+    async_upload_media_to_cloud_doc,
 )
 
 logger = logging.getLogger(__name__)
 
 
-def markdown_to_docx(
+async def async_markdown_to_docx(
     token_manager: TenantAccessTokenManager,
     markdown_content: str,
     doc_name: str,
@@ -30,20 +30,20 @@ def markdown_to_docx(
         file_name = file_name + ".md"
 
     binary_data = markdown_content.encode("utf-8")
-    file_token = upload_media_to_cloud_doc(
+    file_token = await async_upload_media_to_cloud_doc(
         token_manager,
         file_data=binary_data,
         file_name=file_name,
         parent_type="ccm_import_open",
         extra='{"obj_type":"docx","file_extension":"md"}',
     )
-    ticket = create_import_task(
+    ticket = await async_create_import_task(
         token_manager, file_token, file_name.replace(".md", ""), mount_key
     )
-    import_task_result = get_import_task_result(token_manager, ticket)
+    import_task_result = await async_get_import_task_result(token_manager, ticket)
     logger.info(f"ticket: {ticket}, import_task_result: {import_task_result}")
     while import_task_result.job_status in (1, 2):
         time.sleep(1)
-        import_task_result = get_import_task_result(token_manager, ticket)
+        import_task_result = await async_get_import_task_result(token_manager, ticket)
         logger.info(f"ticket: {ticket}, import_task_result: {import_task_result}")
     return import_task_result.url

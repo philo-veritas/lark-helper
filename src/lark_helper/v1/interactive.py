@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 DEFAULT_MARGIN = "0px 0px 0px 0px"
 
 
-def get_md_card_json(title: str, content: str, extra_elements: list = None):
+def get_md_card_json(title: str, content: str, extra_elements: list | None = None):
     # 处理飞书图片代理链接，避免接口报错
 
     # 匹配包含 feishu.cn/api/proxy/down? 的图片链接

@@ -20,3 +20,4 @@ class MessageType(Enum):
 class ReceiveIdType(Enum):
     CHAT_ID = "chat_id"
     OPEN_ID = "open_id"
+    USER_ID = "user_id"

@@ -1,7 +1,7 @@
 import json
 from abc import ABC, abstractmethod
 
-from lark_helper.v1.constants.message import MessageType
+from lark_helper.constants.message import MessageType
 
 
 class MessageContent(ABC):
