@@ -111,14 +111,30 @@ async def async_update_msg(
     )
 
 
-
 # 消息卡片更新限速器（优化版）
 MESSAGE_UPDATE_INTERVAL = 0.21  # 秒
 message_locks: dict[str, asyncio.Lock] = {}  # 存储每个消息的锁
 message_update_timestamps: dict[str, float] = {}
 
 
-async def rate_limited_update_msg(
+def can_async_update_message(message_id: str) -> bool:
+    """
+    检查指定的 message_id 在当前限速规则下是否可以立即更新消息。
+
+    Args:
+        message_id: 要检查的消息ID
+
+    Returns:
+        bool: True 表示可以立即更新，False 表示需要等待
+    """
+    last_update_time = message_update_timestamps.get(message_id, 0)
+    current_time = time.monotonic()
+    elapsed_time = current_time - last_update_time
+
+    return elapsed_time >= MESSAGE_UPDATE_INTERVAL
+
+
+async def async_rate_limited_update_msg(
     token_manager: TenantAccessTokenManager,
     message_id: str,
     content: MessageContent,
