@@ -110,7 +110,7 @@ async def async_make_lark_request[T](
 
     async with aiohttp.ClientSession() as session:
         request_method = getattr(session, method.lower())
-        response = await request_method(url, **request_kwargs)
-        return await async_handle_lark_response(
-            response, data_extractor=data_extractor, use_root_response=use_root_response
-        )
+        async with request_method(url, **request_kwargs) as response:
+            return await async_handle_lark_response(
+                response, data_extractor=data_extractor, use_root_response=use_root_response
+            )
