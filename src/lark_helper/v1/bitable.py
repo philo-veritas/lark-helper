@@ -2,7 +2,7 @@ from typing import Any, TypeVar
 
 from pydantic import BaseModel
 
-from lark_helper.models.biatable import (
+from lark_helper.models.bitable import (
     BitableRecord,
     BitableSearchResponseData,
     BitableViewResponseData,
@@ -72,7 +72,7 @@ def search_bitable_record_page(
     filter_conditions: list[FilterCondition] | None = None,
     conjunction: str = "and",
     page_size: int = 100,
-    page_token: str = None,
+    page_token: str | None = None,
 ) -> BitableSearchResponseData:
     """
     多维表格-记录-查询记录
@@ -84,7 +84,7 @@ def search_bitable_record_page(
         "Content-Type": "application/json; charset=utf-8",
         "Authorization": f"Bearer {token_manager.get_tenant_access_token()}",
     }
-    payload = {}
+    payload: dict[str, Any] = {}
     if view_id:
         payload["view_id"] = view_id
     if field_names:
@@ -97,7 +97,7 @@ def search_bitable_record_page(
             "conjunction": conjunction,
         }
 
-    params = {"page_size": page_size or 20}
+    params: dict[str, Any] = {"page_size": page_size or 20}
     if page_token:
         params["page_token"] = page_token
 

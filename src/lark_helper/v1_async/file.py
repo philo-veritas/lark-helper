@@ -34,9 +34,7 @@ async def async_get_message_resource(
             if response.status == 200:
                 return await response.read()
             else:
-                raise Exception(
-                    f"HTTP Error: {response.status} {await response.text()}"
-                )
+                raise Exception(f"HTTP Error: {response.status} {await response.text()}")
 
 
 async def async_upload_media_to_cloud_doc(
@@ -61,9 +59,7 @@ async def async_upload_media_to_cloud_doc(
     """
     url = "https://open.feishu.cn/open-apis/drive/v1/medias/upload_all"
 
-    headers = {
-        "Authorization": f"Bearer {await token_manager.async_get_tenant_access_token()}"
-    }
+    headers = {"Authorization": f"Bearer {await token_manager.async_get_tenant_access_token()}"}
     # 准备表单数据
     form_data = aiohttp.FormData()
     form_data.add_field("file_name", file_name)
@@ -106,9 +102,7 @@ async def async_download_media_from_cloud_doc(
             if response.status == 200:
                 return await response.read()
             else:
-                raise Exception(
-                    f"HTTP Error: {response.status} {await response.text()}"
-                )
+                raise Exception(f"HTTP Error: {response.status} {await response.text()}")
 
 
 async def async_upload_image(
@@ -226,10 +220,7 @@ async def async_batch_get_tmp_download_url(
     }
 
     def extract_url(data) -> list[TmpDownloadUrl]:
-        return [
-            TmpDownloadUrl.model_validate(item)
-            for item in data.get("tmp_download_urls")
-        ]
+        return [TmpDownloadUrl.model_validate(item) for item in data.get("tmp_download_urls")]
 
     return await async_make_lark_request(
         method="GET",

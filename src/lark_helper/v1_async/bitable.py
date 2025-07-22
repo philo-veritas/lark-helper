@@ -2,7 +2,7 @@ from typing import Any, TypeVar
 
 from pydantic import BaseModel
 
-from lark_helper.models.biatable import (
+from lark_helper.models.bitable import (
     BitableRecord,
     BitableSearchResponseData,
     BitableViewResponseData,
@@ -34,9 +34,7 @@ async def async_add_bitable_record(
         "fields": fields,
     }
 
-    return await async_make_lark_request(
-        method="POST", url=url, headers=headers, data=payload
-    )
+    return await async_make_lark_request(method="POST", url=url, headers=headers, data=payload)
 
 
 async def async_update_bitable_record(
@@ -59,9 +57,7 @@ async def async_update_bitable_record(
         "fields": fields,
     }
 
-    return await async_make_lark_request(
-        method="PUT", url=url, headers=headers, data=payload
-    )
+    return await async_make_lark_request(method="PUT", url=url, headers=headers, data=payload)
 
 
 async def async_search_bitable_record_page(
@@ -74,7 +70,7 @@ async def async_search_bitable_record_page(
     filter_conditions: list[FilterCondition] | None = None,
     conjunction: str = "and",
     page_size: int = 100,
-    page_token: str = None,
+    page_token: str | None = None,
 ) -> BitableSearchResponseData:
     """
     多维表格-记录-查询记录
@@ -85,7 +81,7 @@ async def async_search_bitable_record_page(
         "Content-Type": "application/json; charset=utf-8",
         "Authorization": f"Bearer {await token_manager.async_get_tenant_access_token()}",
     }
-    payload = {}
+    payload: dict[str, Any] = {}
     if view_id:
         payload["view_id"] = view_id
     if field_names:
@@ -98,7 +94,7 @@ async def async_search_bitable_record_page(
             "conjunction": conjunction,
         }
 
-    params = {"page_size": page_size or 20}
+    params: dict[str, Any] = {"page_size": page_size or 20}
     if page_token:
         params["page_token"] = page_token
 

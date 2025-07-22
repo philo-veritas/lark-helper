@@ -68,13 +68,13 @@ class BitableRecord(BaseModel):
             return None
         return int(value)
 
-    def get_date_field(self, field_name: str, format: str = "%Y-%m-%d") -> str | None:
+    def get_date_field(self, field_name: str, date_format: str = "%Y-%m-%d") -> str | None:
         """获取日期类型字段值"""
         timestamp = self.fields.get(field_name)
         if not timestamp:
             return None
         # 飞书返回的时间戳是毫秒级
-        return datetime.fromtimestamp(timestamp / 1000).strftime(format)
+        return datetime.fromtimestamp(timestamp / 1000).strftime(date_format)
 
     def get_select_field(self, field_name: str) -> str | None:
         """获取单选类型字段值"""
@@ -106,9 +106,7 @@ class BitableResponse(BaseModel):
         """从API响应创建响应模型"""
         return cls(
             records=[
-                BitableRecord(
-                    record_id=item.get("record_id", ""), fields=item.get("fields", {})
-                )
+                BitableRecord(record_id=item.get("record_id", ""), fields=item.get("fields", {}))
                 for item in response
             ]
         )

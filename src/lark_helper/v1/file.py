@@ -197,9 +197,7 @@ def get_import_task_result(
 
         return import_task_result
 
-    return make_lark_request(
-        method="GET", url=url, headers=headers, data_extractor=extract_result
-    )
+    return make_lark_request(method="GET", url=url, headers=headers, data_extractor=extract_result)
 
 
 def batch_get_tmp_download_url(
@@ -214,10 +212,7 @@ def batch_get_tmp_download_url(
     }
 
     def extract_url(data) -> list[TmpDownloadUrl]:
-        return [
-            TmpDownloadUrl.model_validate(item)
-            for item in data.get("tmp_download_urls")
-        ]
+        return [TmpDownloadUrl.model_validate(item) for item in data.get("tmp_download_urls")]
 
     return make_lark_request(
         method="GET",

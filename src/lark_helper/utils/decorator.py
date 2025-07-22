@@ -2,12 +2,13 @@ import asyncio
 import functools
 import logging
 import time
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
-def timing_monitor(func_name: str = None, log_level: str = "INFO"):
+def timing_monitor(func_name: str | None = None, log_level: str = "INFO"):
     """
     函数执行耗时监测装饰器，兼容同步和异步函数
 
@@ -45,7 +46,9 @@ def timing_monitor(func_name: str = None, log_level: str = "INFO"):
                 end_time = time.perf_counter()
                 execution_time = end_time - start_time
 
-                error_message = f"函数 '{name}' 执行失败，耗时: {execution_time:.4f} 秒，错误: {str(e)}"
+                error_message = (
+                    f"函数 '{name}' 执行失败，耗时: {execution_time:.4f} 秒，错误: {e!s}"
+                )
                 logger.error(error_message)
                 raise
 
@@ -60,9 +63,7 @@ def timing_monitor(func_name: str = None, log_level: str = "INFO"):
                 end_time = time.perf_counter()
                 execution_time = end_time - start_time
 
-                log_message = (
-                    f"异步函数 '{name}' 执行完成，耗时: {execution_time:.4f} 秒"
-                )
+                log_message = f"异步函数 '{name}' 执行完成，耗时: {execution_time:.4f} 秒"
                 getattr(logger, log_level.lower())(log_message)
 
                 return result
@@ -70,7 +71,9 @@ def timing_monitor(func_name: str = None, log_level: str = "INFO"):
                 end_time = time.perf_counter()
                 execution_time = end_time - start_time
 
-                error_message = f"异步函数 '{name}' 执行失败，耗时: {execution_time:.4f} 秒，错误: {str(e)}"
+                error_message = (
+                    f"异步函数 '{name}' 执行失败，耗时: {execution_time:.4f} 秒，错误: {e!s}"
+                )
                 logger.error(error_message)
                 raise
 

@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Any, Dict
+from typing import Any
 
 from lark_helper.utils.async_request import async_make_lark_request
 from lark_helper.utils.request import make_lark_request
@@ -19,10 +19,7 @@ class TenantAccessTokenManager:
     def get_tenant_access_token(self):
         current_time = time.time()
         # 如果token不存在，或者剩余有效期小于30分钟，则获取新token
-        if (
-            self.token is None
-            or (self.token_expiry - current_time) < self.refresh_threshold
-        ):
+        if self.token is None or (self.token_expiry - current_time) < self.refresh_threshold:
             self.token = self._fetch_tenant_access_token()
             # 使用API返回的实际过期时间来设置过期时间
             self.token_expiry = current_time + self.token["expire"]
@@ -63,17 +60,14 @@ class TenantAccessTokenManager:
             Tenant access token
         """
         current_time = time.time()
-        if (
-            self.token is None
-            or (self.token_expiry - current_time) < self.refresh_threshold
-        ):
+        if self.token is None or (self.token_expiry - current_time) < self.refresh_threshold:
             self.token = await self._async_fetch_tenant_access_token()
             # 使用API返回的实际过期时间来设置过期时间
             self.token_expiry = current_time + self.token["expire"]
             return self.token["token"]
         return self.token["token"]
 
-    async def _async_fetch_tenant_access_token(self) -> Dict[str, Any]:
+    async def _async_fetch_tenant_access_token(self) -> dict[str, Any]:
         """
         Fetch a new tenant access token from the Lark API.
 

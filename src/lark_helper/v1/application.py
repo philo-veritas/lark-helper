@@ -15,6 +15,4 @@ def get_application_info(
     def extract_data(data):
         return data
 
-    return make_lark_request(
-        method="GET", url=url, headers=headers, data_extractor=extract_data
-    )
+    return make_lark_request(method="GET", url=url, headers=headers, data_extractor=extract_data)

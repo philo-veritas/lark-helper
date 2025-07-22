@@ -37,9 +37,7 @@ def markdown_to_docx(
         parent_type="ccm_import_open",
         extra='{"obj_type":"docx","file_extension":"md"}',
     )
-    ticket = create_import_task(
-        token_manager, file_token, file_name.replace(".md", ""), mount_key
-    )
+    ticket = create_import_task(token_manager, file_token, file_name.replace(".md", ""), mount_key)
     import_task_result = get_import_task_result(token_manager, ticket)
     logger.info(f"ticket: {ticket}, import_task_result: {import_task_result}")
     while import_task_result.job_status in (1, 2):

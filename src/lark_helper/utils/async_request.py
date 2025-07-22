@@ -7,17 +7,17 @@ using aiohttp for HTTP requests instead of requests.
 
 import json
 import logging
-from typing import Any, Callable, TypeVar
+from collections.abc import Callable
+from typing import Any
 
 import aiohttp
 
 from lark_helper.exception import LarkResponseError
 
-T = TypeVar("T")
 logger = logging.getLogger(__name__)
 
 
-async def async_handle_lark_response(
+async def async_handle_lark_response[T](
     response: aiohttp.ClientResponse,
     data_extractor: Callable[[dict[str, Any]], T] | None = None,
     use_root_response: bool = False,
@@ -63,7 +63,7 @@ async def async_handle_lark_response(
     return data_extractor(data)
 
 
-async def async_make_lark_request(
+async def async_make_lark_request[T](
     method: str,
     url: str,
     headers: dict[str, str],

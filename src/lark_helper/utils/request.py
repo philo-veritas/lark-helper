@@ -1,19 +1,17 @@
 import json
 import logging
 from collections.abc import Callable
-from typing import Any, TypeVar
+from typing import Any
 
 import requests
-from requests_toolbelt import MultipartEncoder
+from requests_toolbelt import MultipartEncoder  # type: ignore[import-untyped]
 
 from lark_helper.exception import LarkResponseError
-
-T = TypeVar("T")
 
 logger = logging.getLogger(__name__)
 
 
-def handle_lark_response(
+def handle_lark_response[T](
     response: requests.Response,
     data_extractor: Callable[[dict[str, Any]], T] | None = None,
     use_root_response: bool = False,
@@ -59,7 +57,7 @@ def handle_lark_response(
     return data_extractor(data)
 
 
-def make_lark_request(
+def make_lark_request[T](
     method: str,
     url: str,
     headers: dict[str, str],
@@ -89,7 +87,7 @@ def make_lark_request(
     """
     if log_payload and data and method.upper() != "GET":
         logger.info(f"请求数据: {json.dumps(data, ensure_ascii=False)}")
-    elif log_payload and form_data:
+    elif log_payload and form_data and isinstance(form_data, dict):
         if "file" in form_data:
             logger.info("正在发送文件数据")
         else:
@@ -106,7 +104,9 @@ def make_lark_request(
         elif not isinstance(form_data, MultipartEncoder):
             raise ValueError("form_data must be a dict or MultipartEncoder")
         request_kwargs["data"] = form_data
-        headers["Content-Type"] = form_data.content_type
+        # 此时 form_data 已经确保是 MultipartEncoder 类型
+        assert isinstance(form_data, MultipartEncoder)
+        headers["Content-Type"] = str(form_data.content_type)
 
     response = requests.request(method, url, **request_kwargs)
     return handle_lark_response(response, data_extractor, use_root_response)
