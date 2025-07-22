@@ -64,18 +64,18 @@ async def async_upload_media_to_cloud_doc(
     headers = {
         "Authorization": f"Bearer {await token_manager.async_get_tenant_access_token()}"
     }
-
     # 准备表单数据
-    form_data = {
-        "file_name": file_name,
-        "parent_type": parent_type,
-        "size": str(len(file_data)),
-        "file": file_data,
-    }
+    form_data = aiohttp.FormData()
+    form_data.add_field("file_name", file_name)
+    form_data.add_field("parent_type", parent_type)
     if parent_node:
-        form_data["parent_node"] = parent_node
+        form_data.add_field("parent_node", parent_node)
+    form_data.add_field("size", str(len(file_data)))
+    form_data.add_field(
+        "file", file_data, filename=file_name, content_type="application/octet-stream"
+    )
     if extra:
-        form_data["extra"] = extra
+        form_data.add_field("extra", extra)
 
     def extract_file_token(data):
         return data.get("file_token")
@@ -125,10 +125,13 @@ async def async_upload_image(
         "Authorization": f"Bearer {await token_manager.async_get_tenant_access_token()}",
     }
 
-    form_data = {
-        "image_type": image_type,
-        "image": image_binary_data,
-    }
+    # form_data = {
+    #     "image_type": image_type,
+    #     "image": image_binary_data,
+    # }
+    form_data = aiohttp.FormData()
+    form_data.add_field("image", image_binary_data)
+    form_data.add_field("image_type", image_type)
 
     def extract_image_key(data):
         return data.get("image_key")

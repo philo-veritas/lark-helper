@@ -63,15 +63,15 @@ class TenantAccessTokenManager:
             Tenant access token
         """
         current_time = time.time()
-
-        # If token is expired or not set, fetch a new one
-        if not self._token or current_time >= self._token_expire_time:
-            token_data = await self._async_fetch_tenant_access_token()
-            self._token = token_data["tenant_access_token"]
-            # Set expiry time with a 5-minute buffer
-            self._token_expire_time = current_time + token_data["expire"] - 300
-
-        return self._token
+        if (
+            self.token is None
+            or (self.token_expiry - current_time) < self.refresh_threshold
+        ):
+            self.token = await self._async_fetch_tenant_access_token()
+            # 使用API返回的实际过期时间来设置过期时间
+            self.token_expiry = current_time + self.token["expire"]
+            return self.token["token"]
+        return self.token["token"]
 
     async def _async_fetch_tenant_access_token(self) -> Dict[str, Any]:
         """
@@ -84,6 +84,18 @@ class TenantAccessTokenManager:
         headers = {"Content-Type": "application/json; charset=utf-8"}
         data = {"app_id": self.app_id, "app_secret": self.app_secret}
 
+        def extract_token_info(result):
+            logger.info("获取租户access_token成功")
+            return {
+                "token": result.get("tenant_access_token"),
+                "expire": result.get("expire"),
+            }
+
         return await async_make_lark_request(
-            "POST", url, headers, data=data, use_root_response=True
+            method="POST",
+            url=url,
+            headers=headers,
+            data=data,
+            data_extractor=extract_token_info,
+            use_root_response=True,
         )

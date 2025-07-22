@@ -68,7 +68,7 @@ async def async_make_lark_request(
     url: str,
     headers: dict[str, str],
     data: dict[str, Any] | None = None,
-    form_data: dict[str, Any] | None = None,
+    form_data: aiohttp.FormData | None = None,
     params: dict[str, Any] | None = None,
     data_extractor: Callable[[dict[str, Any]], T] | None = None,
     log_payload: bool = True,
@@ -95,10 +95,10 @@ async def async_make_lark_request(
         LarkResponseError: If the response contains an error
     """
     if log_payload:
-        if data:
+        if data and method.upper() != "GET":
             logger.debug(f"Request payload: {json.dumps(data)}")
-        if form_data:
-            logger.debug(f"Form data payload: {form_data}")
+        elif form_data:
+            logger.debug("Request form data payload")
 
     request_kwargs: dict[str, Any] = {"headers": headers}
     if params:
@@ -106,13 +106,7 @@ async def async_make_lark_request(
     if data:
         request_kwargs["json"] = data
     elif form_data:
-        form = aiohttp.FormData()
-        for key, value in form_data.items():
-            if hasattr(value, "read"):  # File-like object
-                form.add_field(key, value)
-            else:
-                form.add_field(key, str(value))
-        request_kwargs["data"] = form
+        request_kwargs["data"] = form_data
 
     async with aiohttp.ClientSession() as session:
         request_method = getattr(session, method.lower())
