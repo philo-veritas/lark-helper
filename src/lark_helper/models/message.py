@@ -7,7 +7,7 @@ from lark_helper.constants.message import MessageType
 class MessageContent(ABC):
     @property
     @abstractmethod
-    def msg_type(self) -> MessageType:
+    def message_type(self) -> MessageType:
         pass
 
     @abstractmethod
@@ -28,7 +28,7 @@ class TextMessageContent(MessageContent):
         return json.dumps({"text": self.text}, ensure_ascii=False)
 
     @property
-    def msg_type(self) -> MessageType:
+    def message_type(self) -> MessageType:
         return MessageType.TEXT
 
     @classmethod
@@ -44,7 +44,7 @@ class PostMessageContent(MessageContent):
         return json.dumps({"zh_cn": {"content": self.content}}, ensure_ascii=False)
 
     @property
-    def msg_type(self) -> MessageType:
+    def message_type(self) -> MessageType:
         return MessageType.POST
 
     @classmethod
@@ -60,7 +60,7 @@ class ImageMessageContent(MessageContent):
         return json.dumps({"image_key": self.image_key}, ensure_ascii=False)
 
     @property
-    def msg_type(self) -> MessageType:
+    def message_type(self) -> MessageType:
         return MessageType.IMAGE
 
     @classmethod
@@ -76,7 +76,7 @@ class InteractiveMessageContent(MessageContent):
         return json.dumps(self.card_json, ensure_ascii=False)
 
     @property
-    def msg_type(self) -> MessageType:
+    def message_type(self) -> MessageType:
         return MessageType.INTERACTIVE
 
     @classmethod

@@ -66,7 +66,7 @@ def reply_message(
     }
     payload = {
         "content": content.json_str(),
-        "msg_type": content.msg_type,
+        "msg_type": content.message_type.value,
     }
 
     def extract_message_id(data):
