@@ -98,11 +98,10 @@ select = [
   "C4",  # comprehensions：推导式改进
   "ISC", # 隐式字符串拼接
   "UP",  # pyupgrade：自动语法升级
-  "RUF", # ruff 官方额外规则
   "I",   # isort-style import 排序
   "SIM", # simplify：复杂度压缩
 ]
-ignore   = ["E501", "RUF002", "RUF003"]        # 行宽由 Black 控制
+ignore   = ["E501"]        # 行宽由 Black 控制
 fixable  = ["ALL"]         # 允许 `ruff --fix` 自动修复
 unfixable = []             # 如需保留某些问题，可在此列出
 
