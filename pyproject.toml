@@ -1,6 +1,6 @@
 [project]
 name = "lark-helper"
-version = "0.1.0.dev2"
+version = "0.1.0.dev3"
 description = "A Python library for interacting with Lark APIs, providing both synchronous and asynchronous interfaces"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -101,7 +101,7 @@ select = [
   "I",   # isort-style import 排序
   "SIM", # simplify：复杂度压缩
 ]
-ignore   = ["E501"]        # 行宽由 Black 控制
+ignore   = ["E501", "SIM117"]   # 行宽由 Black 控制
 fixable  = ["ALL"]         # 允许 `ruff --fix` 自动修复
 unfixable = []             # 如需保留某些问题，可在此列出
 
