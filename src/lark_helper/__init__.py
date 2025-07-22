@@ -13,7 +13,7 @@ Asynchronous API (requires aiohttp):
 """
 
 __version__ = "0.1.0.dev1"
-__author__ = "Philoveritas"
+__author__ = "philo-veritas"
 __email__ = "edison.gee.lan@gmail.com"
 
 # Re-export commonly used classes for convenience
