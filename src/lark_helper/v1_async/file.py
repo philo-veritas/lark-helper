@@ -47,12 +47,14 @@ async def async_upload_media_to_cloud_doc(
 ) -> str:
     """上传素材
     https://open.feishu.cn/document/server-docs/docs/drive-v1/media/upload_all
+    素材概述
+    https://open.feishu.cn/document/server-docs/docs/drive-v1/media/introduction
 
     Args:
         file_data: 文件二进制数据
         file_name: 上传后的文件名称，默认使用原文件名
-        parent_type: 父节点类型，默认为bitable_image
-        parent_node: 父节点ID
+        parent_type: 上传点的类型，默认为bitable_image
+        parent_node: 父节点ID，上传点的类型为 ccm_import_open 时不必填
 
     Returns:
         上传后的文件token
