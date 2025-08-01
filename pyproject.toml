@@ -1,6 +1,6 @@
 [project]
 name = "lark-helper"
-version = "0.1.0.dev5"
+version = "0.1.0.dev6"
 description = "A Python library for interacting with Lark APIs, providing both synchronous and asynchronous interfaces"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -113,3 +113,13 @@ unfixable = []             # 如需保留某些问题，可在此列出
 [tool.ruff.format]          # 可选择把 Ruff 当格式化器用
 quote-style = "double"
 docstring-code-format = true
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning:lark_oapi.*",
+    "ignore::DeprecationWarning:pkg_resources.*",
+    "ignore:There is no current event loop:DeprecationWarning:lark_oapi.*",
+    "ignore:datetime.datetime.utcfromtimestamp.*:DeprecationWarning",
+    "ignore:pkg_resources is deprecated.*:DeprecationWarning",
+    "ignore:Deprecated call to.*:DeprecationWarning",
+]
