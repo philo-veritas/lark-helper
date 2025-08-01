@@ -124,6 +124,7 @@ def search_all_bitable_records(
     filter_conditions: list[FilterCondition] | None = None,
     conjunction: str = "and",
     page_size: int = 100,
+    max_size: int | None = None,
 ) -> list[BitableRecord]:
     """
     查询多维表格记录
@@ -147,7 +148,7 @@ def search_all_bitable_records(
     all_items: list[BitableRecord] = []
     has_more = True
     page_token = None
-    while has_more:
+    while has_more and (max_size is None or len(all_items) < max_size):
         resp_data = search_bitable_record_page(
             token_manager=token_manager,
             app_token=app_token,
@@ -163,6 +164,9 @@ def search_all_bitable_records(
         all_items.extend(resp_data.items)
         has_more = resp_data.has_more
         page_token = resp_data.page_token
+
+    if max_size and len(all_items) > max_size:
+        all_items = all_items[:max_size]
 
     return all_items
 
