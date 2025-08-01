@@ -99,12 +99,12 @@ class BitableRecord(BaseModel):
             return value[0].get("text")
         return None
 
-    def get_number_field(self, field_name: str) -> int | None:
+    def get_number_field(self, field_name: str) -> float | None:
         """获取数字类型字段值"""
         value = self.fields.get(field_name)
         if value is None:
             return None
-        return int(value)
+        return float(value)
 
     def get_date_field(self, field_name: str, date_format: str = "%Y-%m-%d") -> str | None:
         """获取日期类型字段值"""
