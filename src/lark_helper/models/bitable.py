@@ -17,15 +17,53 @@ class FilterCondition(BaseModel):
 
     @classmethod
     def is_equal(cls, field_name: str, value: str):
+        # 等于
         return cls(field_name=field_name, operator="is", value=[value])
 
     @classmethod
+    def is_not(cls, field_name: str, value: str):
+        # 不等于（不支持日期字段）
+        return cls(field_name=field_name, operator="isNot", value=[value])
+
+    @classmethod
+    def contains(cls, field_name: str, value: str):
+        # 包含（不支持日期字段）
+        return cls(field_name=field_name, operator="contains", value=[value])
+
+    @classmethod
+    def does_not_contain(cls, field_name: str, value: str):
+        # 不包含（不支持日期字段）
+        return cls(field_name=field_name, operator="doesNotContain", value=[value])
+
+    @classmethod
     def is_empty(cls, field_name: str):
+        # 为空
         return cls(field_name=field_name, operator="isEmpty", value=[])
 
     @classmethod
+    def is_not_empty(cls, field_name: str):
+        # 不为空
+        return cls(field_name=field_name, operator="isNotEmpty", value=[])
+
+    @classmethod
+    def is_greater(cls, field_name: str, value: str):
+        # 大于
+        return cls(field_name=field_name, operator="isGreater", value=[value])
+
+    @classmethod
+    def is_greater_equal(cls, field_name: str, value: str):
+        # 大于等于（不支持日期字段）
+        return cls(field_name=field_name, operator="isGreaterEqual", value=[value])
+
+    @classmethod
     def is_less(cls, field_name: str, value: str):
+        # 小于
         return cls(field_name=field_name, operator="isLess", value=[value])
+
+    @classmethod
+    def is_less_equal(cls, field_name: str, value: str):
+        # 小于等于（不支持日期字段）
+        return cls(field_name=field_name, operator="isLessEqual", value=[value])
 
     def is_null(self):
         return not self.field_name and not self.operator and not self.value
