@@ -10,7 +10,8 @@ def get_md_card_json(title: str, content: str, extra_elements: list | None = Non
     # 处理飞书图片代理链接，避免接口报错
 
     # 匹配包含 feishu.cn/api/proxy/down? 的图片链接
-    pattern = r"!\[([^\]]*)\]\((https://[^)]*feishu\.cn/api/proxy/down\?[^)]*)\)"
+    pattern_1 = r"!\[([^\]]*)\]\((https://[^)]*feishu\.cn/api/proxy/down\?[^)]*)\)"
+    pattern_2 = r"!\[([^\]]*)\]\((https://[^)]*hailiang\.com/api/proxy/down\?[^)]*)\)"
 
     # 将图片链接替换为文本描述
     def replace_image(match):
@@ -18,7 +19,8 @@ def get_md_card_json(title: str, content: str, extra_elements: list | None = Non
         logger.warning(f"alt_text: {alt_text}")
         return f"[{alt_text}]"
 
-    processed_content = re.sub(pattern, replace_image, content)
+    processed_content = re.sub(pattern_1, replace_image, content)
+    processed_content = re.sub(pattern_2, replace_image, processed_content)
 
     elements = [{"tag": "markdown", "content": processed_content}]
     if extra_elements:
