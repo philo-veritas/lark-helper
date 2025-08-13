@@ -11,3 +11,9 @@ class ImportTaskResult(BaseModel):
 class TmpDownloadUrl(BaseModel):
     file_token: str
     tmp_download_url: str
+
+
+class ExportTaskResult(BaseModel):
+    job_status: int
+    file_token: str | None = None
+    job_error_msg: str | None = None

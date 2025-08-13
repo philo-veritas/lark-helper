@@ -2,6 +2,8 @@ import logging
 import time
 from typing import Any
 
+import lark_oapi as lark
+
 from lark_helper.utils.async_request import async_make_lark_request
 from lark_helper.utils.request import make_lark_request
 
@@ -15,6 +17,15 @@ class TenantAccessTokenManager:
         self.token = None
         self.token_expiry = 0
         self.refresh_threshold = 1800  # 30分钟的刷新阈值（秒）
+
+    def get_lark_client(self):
+        return (
+            lark.Client.builder()
+            .app_id(self.app_id)
+            .app_secret(self.app_secret)
+            .log_level(lark.LogLevel.INFO)
+            .build()
+        )
 
     def get_tenant_access_token(self):
         current_time = time.time()

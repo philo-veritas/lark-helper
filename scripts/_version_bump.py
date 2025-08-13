@@ -73,8 +73,7 @@ def replace_version_in_pyproject(pyproject_path: Path, new_version: str) -> tupl
                 old_version = match.group("version")
                 if old_version != new_version:
                     lines[i] = (
-                        f'{match.group("prefix")}{new_version}{match.group("suffix")}'
-                        f"{ending}"
+                        f"{match.group('prefix')}{new_version}{match.group('suffix')}{ending}"
                     )
                     changed = True
                 break
@@ -102,10 +101,7 @@ def replace_version_in_init(init_path: Path, new_version: str) -> tuple[str, boo
         if match:
             old_version = match.group("version")
             if old_version != new_version:
-                lines[i] = (
-                    f'{match.group("prefix")}{new_version}{match.group("suffix")}'
-                    f"{ending}"
-                )
+                lines[i] = f"{match.group('prefix')}{new_version}{match.group('suffix')}{ending}"
                 changed = True
             break
 
@@ -130,6 +126,7 @@ def run(
     if echo is None:
         echo = print
     if err_echo is None:  # pragma: no cover - 默认 stderr 输出
+
         def _err(s: str) -> None:
             print(s, file=sys.stderr)
 
@@ -166,12 +163,12 @@ def run(
 
     if not quiet:
         echo(
-            f"pyproject.toml: {old_py} -> {new_version}" + (" (已更新)" if changed_py else " (无变化)")
+            f"pyproject.toml: {old_py} -> {new_version}"
+            + (" (已更新)" if changed_py else " (无变化)")
         )
         echo(
-            f"__init__.py   : {old_init} -> {new_version}" + (" (已更新)" if changed_init else " (无变化)")
+            f"__init__.py   : {old_init} -> {new_version}"
+            + (" (已更新)" if changed_init else " (无变化)")
         )
 
     return 0
-
-

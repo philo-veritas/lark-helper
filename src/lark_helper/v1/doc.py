@@ -1,6 +1,9 @@
 import logging
+import re
 import time
 
+from lark_helper.constants.doc import UrlPathType
+from lark_helper.models.doc import DocumentInfo
 from lark_helper.token_manager import TenantAccessTokenManager
 from lark_helper.v1.file import (
     create_import_task,
@@ -9,6 +12,22 @@ from lark_helper.v1.file import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def extract_lark_doc_node_token(url: str) -> DocumentInfo | None:
+    paths = [url_type.path for url_type in UrlPathType]
+    pattern = f"({'|'.join(re.escape(path) for path in paths)})/([a-zA-Z0-9]+)"
+
+    match = re.search(pattern, url)
+    if match:
+        path = match.group(1)
+        token = match.group(2)
+
+        url_type = UrlPathType.from_path(path)
+        if url_type:
+            return DocumentInfo(url_type.document_type, token)
+
+    return None
 
 
 def markdown_to_docx(

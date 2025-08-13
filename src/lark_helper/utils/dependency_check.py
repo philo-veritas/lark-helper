@@ -6,15 +6,14 @@ and providing helpful error messages when they are missing.
 """
 
 import importlib.util
-from typing import Optional, Tuple
 
 
 def check_dependency(
     package_name: str,
-    min_version: Optional[str] = None,
-    install_name: Optional[str] = None,
-    extras_name: Optional[str] = None,
-) -> Tuple[bool, Optional[str]]:
+    min_version: str | None = None,
+    install_name: str | None = None,
+    extras_name: str | None = None,
+) -> tuple[bool, str | None]:
     """
     Check if a dependency is installed and meets the minimum version requirement.
 
@@ -84,7 +83,7 @@ def check_dependency(
         return True, None
 
 
-def check_async_dependencies() -> Tuple[bool, Optional[str]]:
+def check_async_dependencies() -> tuple[bool, str | None]:
     """
     Check if all dependencies required for async functionality are available.
 

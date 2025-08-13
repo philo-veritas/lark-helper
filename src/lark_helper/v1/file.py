@@ -1,9 +1,22 @@
 import logging
 
+import lark_oapi as lark
 import requests
+from lark_oapi.api.drive.v1 import (
+    CreateExportTaskRequest,
+    CreateExportTaskResponse,
+    DownloadExportTaskRequest,
+    DownloadExportTaskResponse,
+    ExportTask,
+    GetExportTaskRequest,
+    GetExportTaskResponse,
+)
 
-from lark_helper.constants.file import JOB_STATUS_ERROR_MAP
-from lark_helper.exception import ImportTaskError
+from lark_helper.constants.file import (
+    EXPORT_TASK_JOB_STATUS_ERROR_MAP,
+    IMPORT_TASK_JOB_STATUS_ERROR_MAP,
+)
+from lark_helper.exception import ExportTaskError, ImportTaskError, LarkResponseError
 from lark_helper.models.file import ImportTaskResult, TmpDownloadUrl
 from lark_helper.token_manager import TenantAccessTokenManager
 from lark_helper.utils.request import make_lark_request
@@ -188,13 +201,13 @@ def get_import_task_result(
     def extract_result(data):
         result = data.get("result")
         import_task_result = ImportTaskResult(**result)
-        if import_task_result.job_status in JOB_STATUS_ERROR_MAP:
+        if import_task_result.job_status in IMPORT_TASK_JOB_STATUS_ERROR_MAP:
             logger.error(
-                f"导入任务失败: {import_task_result.job_status}, {JOB_STATUS_ERROR_MAP[import_task_result.job_status]}"
+                f"导入任务失败: {import_task_result.job_status}, {IMPORT_TASK_JOB_STATUS_ERROR_MAP[import_task_result.job_status]}"
             )
             raise ImportTaskError(
                 import_task_result.job_status,
-                JOB_STATUS_ERROR_MAP[import_task_result.job_status],
+                IMPORT_TASK_JOB_STATUS_ERROR_MAP[import_task_result.job_status],
             )
 
         return import_task_result
@@ -223,3 +236,135 @@ def batch_get_tmp_download_url(
         params=params,
         data_extractor=extract_url,
     )
+
+
+def create_export_task(
+    token_manager: TenantAccessTokenManager,
+    file_token: str,
+    file_type: str,
+    export_type: str,
+) -> str:
+    """
+    创建导出任务
+    https://open.feishu.cn/document/server-docs/docs/drive-v1/export_task/create
+
+    Args:
+        file_token: 源云文档token
+        file_type: 云文档类型，如"docx", "sheet", "bitable"等
+        type_: 导出类型，如"pdf", "docx", "xlsx", "csv"等
+
+    Returns:
+        导出任务ticket
+    """
+    client = token_manager.get_lark_client()
+
+    # 构造请求对象
+    request: CreateExportTaskRequest = (
+        CreateExportTaskRequest.builder()
+        .request_body(
+            ExportTask.builder()
+            .file_extension(file_type)
+            .token(file_token)
+            .type(export_type)
+            .build()
+        )
+        .build()
+    )
+
+    # 发起请求
+    response: CreateExportTaskResponse = client.drive.v1.export_task.create(request)
+
+    # 处理失败返回
+    if not response.success():
+        error_msg = f"client.drive.v1.export_task.create failed, code: {response.code}, msg: {response.msg}, log_id: {response.get_log_id()}"
+        lark.logger.error(error_msg)
+        raise LarkResponseError(error_msg)
+
+    # 处理业务结果
+    lark.logger.info(lark.JSON.marshal(response.data, indent=4))
+    return response.data.ticket
+
+
+def get_export_task_result(
+    token_manager: TenantAccessTokenManager,
+    ticket: str,
+    token: str,
+) -> ExportTask:
+    """
+    查询导出任务结果
+    https://open.feishu.cn/document/server-docs/docs/drive-v1/export_task/get
+
+    Args:
+        ticket: 导出任务ticket
+        token: 导出文件token
+    Returns:
+        导出任务结果
+    """
+    # 创建client
+    client = token_manager.get_lark_client()
+
+    # 构造请求对象
+    request: GetExportTaskRequest = (
+        GetExportTaskRequest.builder().ticket(ticket).token(token).build()
+    )
+
+    # 发起请求
+    response: GetExportTaskResponse = client.drive.v1.export_task.get(request)
+
+    # 处理失败返回
+    if not response.success():
+        error_msg = f"client.drive.v1.export_task.get failed, code: {response.code}, msg: {response.msg}, log_id: {response.get_log_id()}"
+        lark.logger.error(error_msg)
+        raise LarkResponseError(error_msg)
+
+    # 处理业务结果
+    lark.logger.info(lark.JSON.marshal(response.data, indent=4))
+
+    # 构建返回结果
+    export_task_result: ExportTask = response.data.result
+
+    if export_task_result.job_status in EXPORT_TASK_JOB_STATUS_ERROR_MAP:
+        logger.error(
+            f"导出任务失败: {export_task_result.job_status}, {EXPORT_TASK_JOB_STATUS_ERROR_MAP[export_task_result.job_status]}"
+        )
+        raise ExportTaskError(
+            export_task_result.job_status,
+            EXPORT_TASK_JOB_STATUS_ERROR_MAP[export_task_result.job_status],
+        )
+
+    return export_task_result
+
+
+def download_export_file(
+    token_manager: TenantAccessTokenManager,
+    file_token: str,
+) -> bytes:
+    """
+    下载导出文件
+    https://open.feishu.cn/document/server-docs/docs/drive-v1/export_task/download
+
+    Args:
+        file_token: 导出文件token
+
+    Returns:
+        文件二进制数据
+    """
+    # 创建client
+    client = token_manager.get_lark_client()
+
+    # 构造请求对象
+    request: DownloadExportTaskRequest = (
+        DownloadExportTaskRequest.builder().file_token(file_token).build()
+    )
+
+    # 发起请求
+    response: DownloadExportTaskResponse = client.drive.v1.export_task.download(request)
+
+    # 处理失败返回
+    if not response.success():
+        error_msg = f"client.drive.v1.export_task.download failed, code: {response.code}, msg: {response.msg}, log_id: {response.get_log_id()}"
+        lark.logger.error(error_msg)
+        raise LarkResponseError(error_msg)
+
+    # 处理业务结果 - 返回二进制数据
+    return response.raw.content

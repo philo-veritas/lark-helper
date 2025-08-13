@@ -2,7 +2,7 @@ import logging
 
 import aiohttp
 
-from lark_helper.constants.file import JOB_STATUS_ERROR_MAP
+from lark_helper.constants.file import IMPORT_TASK_JOB_STATUS_ERROR_MAP
 from lark_helper.exception import ImportTaskError
 from lark_helper.models.file import ImportTaskResult, TmpDownloadUrl
 from lark_helper.token_manager import TenantAccessTokenManager
@@ -194,13 +194,13 @@ async def async_get_import_task_result(
     def extract_result(data):
         result = data.get("result")
         import_task_result = ImportTaskResult(**result)
-        if import_task_result.job_status in JOB_STATUS_ERROR_MAP:
+        if import_task_result.job_status in IMPORT_TASK_JOB_STATUS_ERROR_MAP:
             logger.error(
-                f"导入任务失败: {import_task_result.job_status}, {JOB_STATUS_ERROR_MAP[import_task_result.job_status]}"
+                f"导入任务失败: {import_task_result.job_status}, {IMPORT_TASK_JOB_STATUS_ERROR_MAP[import_task_result.job_status]}"
             )
             raise ImportTaskError(
                 import_task_result.job_status,
-                JOB_STATUS_ERROR_MAP[import_task_result.job_status],
+                IMPORT_TASK_JOB_STATUS_ERROR_MAP[import_task_result.job_status],
             )
 
         return import_task_result
