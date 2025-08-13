@@ -1,0 +1,63 @@
+---
+alwaysApply: true
+description: "Python 项目统一规范：依赖与命令使用 uv；构建命令行脚本优先使用 click"
+---
+
+# Python/CLI 规范（uv + click）
+
+本规则适用于本仓库所有 Python 开发与命令行脚本场景，统一如下约定：
+
+## 依赖与命令运行
+
+- 优先使用 uv 管理依赖与执行命令。
+- 安装开发依赖：
+
+```bash
+uv pip install -e .[dev]
+```
+
+- 运行 Python/工具命令，统一通过 `uv run`：
+
+```bash
+# 运行测试
+uv run pytest -q
+
+# 运行 CLI 脚本（入口脚本/模块/文件）
+uv run bump-version
+uv run python scripts/bump_version.py --dry-run
+```
+
+- 入口命令应配置在 `pyproject.toml` 的 `[project.scripts]`，示例见：
+  - [pyproject.toml](mdc:pyproject.toml)
+
+## 命令行工具首选 click
+
+- 构建 CLI 时，优先使用 `click` 而非 `argparse`。除非有充分理由，不新增/改用 `argparse`。
+- 已有示例：
+  - [src/lark_helper/_version_cli.py](mdc:src/lark_helper/_version_cli.py)
+  - [scripts/bump_version.py](mdc:scripts/bump_version.py)
+
+### 最小示例
+
+```python
+import click
+
+@click.command()
+@click.option("--dry-run", is_flag=True, help="仅显示将要发生的变更")
+def main(dry_run: bool) -> None:
+    click.echo(f"dry_run={dry_run}")
+
+if __name__ == "__main__":
+    main()
+```
+
+## 约束与一致性
+
+- 若临时使用 `argparse`，需在 PR 中说明原因并附迁移计划。
+- 文档/README 中的命令行示例需提供等价的 `uv run` 用法。
+- 与 CLI 相关的入口应注册在 `[project.scripts]`，当前已有：
+
+```toml
+[project.scripts]
+bump-version = "lark_helper._version_cli:main"
+```
