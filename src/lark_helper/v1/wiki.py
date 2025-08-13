@@ -41,7 +41,7 @@ def get_node_space(
         raise LarkResponseError(error_msg)
 
     # 处理业务结果
-    lark.logger.info(lark.JSON.marshal(response.data, indent=4))
+    lark.logger.debug(lark.JSON.marshal(response.data, indent=4))
     return response.data.node
 
 
@@ -108,8 +108,7 @@ def get_document(token_manager: TenantAccessTokenManager, document_id: str) -> d
         raise LarkResponseError(error_msg)
 
     # 处理业务结果
-    lark.logger.info(lark.JSON.marshal(response.data, indent=4))
-
+    lark.logger.debug(lark.JSON.marshal(response.data, indent=4))
     return response.data
 
 
@@ -142,5 +141,5 @@ def get_file_meta(token_manager: TenantAccessTokenManager, doc_token: str, doc_t
         raise LarkResponseError(error_msg)
 
     # 处理业务结果
-    lark.logger.info(lark.JSON.marshal(response.data, indent=4))
+    lark.logger.debug(lark.JSON.marshal(response.data, indent=4))
     return response.data
