@@ -14,7 +14,7 @@ from lark_helper.v1.file import (
 logger = logging.getLogger(__name__)
 
 
-def extract_lark_doc_node_token(url: str) -> DocumentInfo | None:
+def parse_doc_url(url: str) -> DocumentInfo | None:
     paths = [url_type.path for url_type in UrlPathType]
     pattern = f"({'|'.join(re.escape(path) for path in paths)})/([a-zA-Z0-9]+)"
 
