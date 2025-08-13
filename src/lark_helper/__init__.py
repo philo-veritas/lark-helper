@@ -12,7 +12,7 @@ Asynchronous API (requires aiohttp):
     from lark_helper.v1_async import bitable, message, file
 """
 
-__version__ = "0.1.0.dev11"
+__version__ = "0.1.0.dev12"
 __author__ = "philo-veritas"
 __email__ = "edison.gee.lan@gmail.com"
 
