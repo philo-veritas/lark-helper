@@ -6,4 +6,4 @@ from lark_helper.constants.doc import DocumentType
 @dataclass
 class DocumentInfo:
     document_type: DocumentType
-    token: str
+    node_token: str

@@ -21,11 +21,11 @@ def parse_doc_url(url: str) -> DocumentInfo | None:
     match = re.search(pattern, url)
     if match:
         path = match.group(1)
-        token = match.group(2)
+        node_token = match.group(2)
 
         url_type = UrlPathType.from_path(path)
         if url_type:
-            return DocumentInfo(url_type.document_type, token)
+            return DocumentInfo(url_type.document_type, node_token)
 
     return None
 
