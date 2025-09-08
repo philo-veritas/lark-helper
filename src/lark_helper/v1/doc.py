@@ -43,6 +43,10 @@ def markdown_to_docx(
         markdown_content: markdown内容
         doc_name: 文件名
         mount_key: 挂载点密钥
+
+    Raises:
+        ImportTaskError: 当导入任务失败时抛出，包含失败状态码和错误描述
+        LarkResponseError: 当API调用失败时抛出
     """
     file_name = doc_name
     if not file_name.endswith(".md"):

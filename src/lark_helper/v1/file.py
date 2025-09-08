@@ -69,6 +69,9 @@ def upload_media_to_cloud_doc(
 
     Returns:
         上传后的文件token
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = "https://open.feishu.cn/open-apis/drive/v1/medias/upload_all"
 
@@ -124,6 +127,12 @@ def upload_image(
     """
     上传图片到飞书
     https://open.feishu.cn/document/server-docs/im-v1/image/create
+
+    Returns:
+        str: 上传后的图片key
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = "https://open.feishu.cn/open-apis/im/v1/images"
     token = token_manager.get_tenant_access_token()
@@ -160,6 +169,12 @@ def create_import_task(
 
     Args:
         mount_key: 挂载点key
+
+    Returns:
+        str: 导入任务ticket
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = "https://open.feishu.cn/open-apis/drive/v1/import_tasks"
     headers = {
@@ -192,6 +207,13 @@ def get_import_task_result(
     """
     获取导入任务结果
     https://open.feishu.cn/document/server-docs/docs/drive-v1/import_task/get
+
+    Returns:
+        ImportTaskResult: 导入任务结果
+
+    Raises:
+        ImportTaskError: 当导入任务失败时抛出，包含失败状态码和错误描述
+        LarkResponseError: 当API调用失败时抛出
     """
     url = f"https://open.feishu.cn/open-apis/drive/v1/import_tasks/{ticket}"
     headers = {
@@ -218,6 +240,16 @@ def get_import_task_result(
 def batch_get_tmp_download_url(
     token_manager: TenantAccessTokenManager, file_tokens: list[str]
 ) -> list[TmpDownloadUrl]:
+    """
+    批量获取临时下载链接
+    https://open.feishu.cn/document/server-docs/docs/drive-v1/media/batch_get_tmp_download_url
+
+    Returns:
+        list[TmpDownloadUrl]: 临时下载链接列表
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
+    """
     url = "https://open.feishu.cn/open-apis/drive/v1/medias/batch_get_tmp_download_url"
     params = {
         "file_tokens": file_tokens,
@@ -255,6 +287,9 @@ def create_export_task(
 
     Returns:
         导出任务ticket
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     client = token_manager.get_lark_client()
 
@@ -299,6 +334,9 @@ def get_export_task_result(
         token: 导出文件token
     Returns:
         导出任务结果
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     # 创建client
     client = token_manager.get_lark_client()
@@ -348,6 +386,9 @@ def download_export_file(
 
     Returns:
         文件二进制数据
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     # 创建client
     client = token_manager.get_lark_client()

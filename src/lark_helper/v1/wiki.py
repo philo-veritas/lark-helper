@@ -25,6 +25,11 @@ def get_node_space(
     """
     获取知识空间节点信息
     https://open.feishu.cn/document/server-docs/docs/wiki-v2/space-node/get_node
+    frequency limit: 100/min
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
+
     """
     client = token_manager.get_lark_client()
 
@@ -55,6 +60,10 @@ def list_space_node(
     """
     获取知识空间子节点列表
     https://open.feishu.cn/document/server-docs/docs/wiki-v2/space-node/list
+    frequency limit: 100/min
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     client = token_manager.get_lark_client()
 
@@ -94,6 +103,9 @@ def get_document(token_manager: TenantAccessTokenManager, document_id: str) -> d
     """
     获取文档基本信息
     https://open.feishu.cn/document/server-docs/docs/docs/docx-v1/document/get
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     client = token_manager.get_lark_client()
 
@@ -116,6 +128,9 @@ def get_file_meta(token_manager: TenantAccessTokenManager, doc_token: str, doc_t
     """
     获取文件元数据
     https://open.feishu.cn/document/server-docs/docs/drive-v1/file/batch_query
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     client = token_manager.get_lark_client()
 

@@ -24,6 +24,12 @@ def add_bitable_record(
     """
     多维表格-新增记录
     https://open.feishu.cn/document/server-docs/docs/bitable-v1/app-table-record/create
+
+    Returns:
+        dict[str, Any]: 新增记录的响应数据
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
 
     url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records"
@@ -48,6 +54,12 @@ def update_bitable_record(
     """
     多维表格-更新记录
     https://open.feishu.cn/document/server-docs/docs/bitable-v1/app-table-record/update
+
+    Returns:
+        dict: 更新记录的响应数据
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
 
     url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records/{record_id}"
@@ -77,6 +89,12 @@ def search_bitable_record_page(
     """
     多维表格-记录-查询记录
     https://open.feishu.cn/document/docs/bitable-v1/app-table-record/search
+
+    Returns:
+        BitableSearchResponseData: 查询记录的响应数据
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
 
     url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records/search"
@@ -179,6 +197,12 @@ def list_bitable_views_page(
     """
     多维表格-视图-查询视图
     https://open.feishu.cn/document/server-docs/docs/bitable-v1/app-table-view/list
+
+    Returns:
+        BitableViewResponseData: 查询视图的响应数据
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
 
     url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/views"

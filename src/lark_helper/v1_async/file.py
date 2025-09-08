@@ -51,13 +51,18 @@ async def async_upload_media_to_cloud_doc(
     https://open.feishu.cn/document/server-docs/docs/drive-v1/media/introduction
 
     Args:
+        token_manager: 租户访问令牌管理器
         file_data: 文件二进制数据
         file_name: 上传后的文件名称，默认使用原文件名
         parent_type: 上传点的类型，默认为bitable_image
         parent_node: 父节点ID，上传点的类型为 ccm_import_open 时不必填
+        extra: 额外参数
 
     Returns:
-        上传后的文件token
+        str: 上传后的文件token
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = "https://open.feishu.cn/open-apis/drive/v1/medias/upload_all"
 
@@ -115,6 +120,17 @@ async def async_upload_image(
     """
     上传图片到飞书
     https://open.feishu.cn/document/server-docs/im-v1/image/create
+
+    Args:
+        token_manager: 租户访问令牌管理器
+        image_binary_data: 图片二进制数据
+        image_type: 图片类型，默认为"message"
+
+    Returns:
+        str: 上传后的图片key
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = "https://open.feishu.cn/open-apis/im/v1/images"
     headers = {
@@ -152,7 +168,16 @@ async def async_create_import_task(
     https://open.feishu.cn/document/server-docs/docs/drive-v1/import_task/create
 
     Args:
+        token_manager: 租户访问令牌管理器
+        file_token: 文件token
+        file_name: 文件名
         mount_key: 挂载点key
+
+    Returns:
+        str: 导入任务的ticket
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = "https://open.feishu.cn/open-apis/drive/v1/import_tasks"
     headers = {
@@ -185,6 +210,17 @@ async def async_get_import_task_result(
     """
     获取导入任务结果
     https://open.feishu.cn/document/server-docs/docs/drive-v1/import_task/get
+
+    Args:
+        token_manager: 租户访问令牌管理器
+        ticket: 导入任务ticket
+
+    Returns:
+        ImportTaskResult: 导入任务结果
+
+    Raises:
+        ImportTaskError: 当导入任务失败时抛出，包含失败状态码和错误描述
+        LarkResponseError: 当API调用失败时抛出
     """
     url = f"https://open.feishu.cn/open-apis/drive/v1/import_tasks/{ticket}"
     headers = {
@@ -213,6 +249,19 @@ async def async_get_import_task_result(
 async def async_batch_get_tmp_download_url(
     token_manager: TenantAccessTokenManager, file_tokens: list[str]
 ) -> list[TmpDownloadUrl]:
+    """
+    批量获取文件临时下载链接
+
+    Args:
+        token_manager: 租户访问令牌管理器
+        file_tokens: 文件token列表
+
+    Returns:
+        list[TmpDownloadUrl]: 临时下载链接列表
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
+    """
     url = "https://open.feishu.cn/open-apis/drive/v1/medias/batch_get_tmp_download_url"
     params = {
         "file_tokens": file_tokens,

@@ -9,6 +9,12 @@ def get_user_info(
     """
     获取用户信息
     https://open.feishu.cn/document/server-docs/contact-v3/user/get
+
+    Returns:
+        dict: 用户信息数据
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
 
     url = f"https://open.feishu.cn/open-apis/contact/v3/users/{user_id}"
@@ -36,6 +42,12 @@ def batch_get_open_id(
 ):
     """
     批量获取用户ID
+
+    Returns:
+        list: 用户ID列表
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = "https://open.feishu.cn/open-apis/contact/v3/users/batch_get_id"
     headers = {

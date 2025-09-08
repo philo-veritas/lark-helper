@@ -24,6 +24,9 @@ async def async_send_message(
     https://open.feishu.cn/document/server-docs/im-v1/message/create
     发送消息内容结构
     https://open.feishu.cn/document/server-docs/im-v1/message-content-description/create_json
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = f"https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type={receive_id_type.value}"
     logger.info(f"发送消息: {url}")
@@ -60,6 +63,9 @@ async def async_reply_message(
     https://open.feishu.cn/document/server-docs/im-v1/message/reply
     发送消息内容结构
     https://open.feishu.cn/document/server-docs/im-v1/message-content-description/create_json
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = f"https://open.feishu.cn/open-apis/im/v1/messages/{message_id}/reply"
     headers = {
@@ -94,6 +100,9 @@ async def async_update_msg(
     https://open.feishu.cn/document/server-docs/im-v1/message-card/patch
 
     单条消息更新频控为 5 QPS
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = f"https://open.feishu.cn/open-apis/im/v1/messages/{message_id}"
     headers = {

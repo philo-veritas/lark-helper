@@ -9,6 +9,9 @@ async def async_get_user_info(
     """
     获取用户信息
     https://open.feishu.cn/document/server-docs/contact-v3/user/get
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
 
     url = f"https://open.feishu.cn/open-apis/contact/v3/users/{user_id}"
@@ -36,6 +39,9 @@ async def async_batch_get_open_id(
 ):
     """
     批量获取用户ID
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = "https://open.feishu.cn/open-apis/contact/v3/users/batch_get_id"
     headers = {

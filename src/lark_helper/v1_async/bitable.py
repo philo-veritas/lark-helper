@@ -24,6 +24,18 @@ async def async_add_bitable_record(
     """
     多维表格-新增记录
     https://open.feishu.cn/document/server-docs/docs/bitable-v1/app-table-record/create
+
+    Args:
+        token_manager: 租户访问令牌管理器
+        app_token: 多维表格应用令牌
+        table_id: 表格ID
+        fields: 记录字段数据
+
+    Returns:
+        dict[str, Any]: 新增记录的响应数据
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records"
     headers = {
@@ -47,6 +59,19 @@ async def async_update_bitable_record(
     """
     多维表格-更新记录
     https://open.feishu.cn/document/server-docs/docs/bitable-v1/app-table-record/update
+
+    Args:
+        token_manager: 租户访问令牌管理器
+        app_token: 多维表格应用令牌
+        table_id: 表格ID
+        record_id: 记录ID
+        fields: 更新的字段数据
+
+    Returns:
+        dict: 更新记录的响应数据
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records/{record_id}"
     headers = {
@@ -75,6 +100,24 @@ async def async_search_bitable_record_page(
     """
     多维表格-记录-查询记录
     https://open.feishu.cn/document/docs/bitable-v1/app-table-record/search
+
+    Args:
+        token_manager: 租户访问令牌管理器
+        app_token: 多维表格应用令牌
+        table_id: 表格ID
+        view_id: 视图ID，可选
+        field_names: 指定返回的字段名列表，可选
+        sort_conditions: 排序条件列表，可选
+        filter_conditions: 筛选条件列表，可选
+        conjunction: 条件连接方式，"and"或"or"
+        page_size: 每页记录数
+        page_token: 分页标记，可选
+
+    Returns:
+        BitableSearchResponseData: 查询结果数据
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
     url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records/search"
     headers = {
@@ -176,6 +219,17 @@ async def async_list_bitable_views_page(
     """
     多维表格-视图-查询视图
     https://open.feishu.cn/document/server-docs/docs/bitable-v1/app-table-view/list
+
+    Args:
+        token_manager: 租户访问令牌管理器
+        app_token: 多维表格应用令牌
+        table_id: 表格ID
+
+    Returns:
+        BitableViewResponseData: 视图查询结果数据
+
+    Raises:
+        LarkResponseError: 当API调用失败时抛出
     """
 
     url = f"https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/views"
