@@ -88,3 +88,21 @@ class MarkdownMessageContent(PostMessageContent):
     def __init__(self, text: str):
         content = [[{"tag": "md", "text": text}]]
         super().__init__(content)
+
+
+class FileMessageContent(MessageContent):
+    def __init__(self, file_key: str, file_name: str):
+        self.file_key = file_key
+        self.file_name = file_name
+        
+
+    def json_str(self) -> str:
+        return json.dumps({"file_key": self.file_key, "file_name": self.file_name}, ensure_ascii=False)
+
+    @property
+    def message_type(self) -> MessageType:
+        return MessageType.FILE
+    
+    @classmethod
+    def from_json_str(cls, json_str: str):
+        return cls(json.loads(json_str).get("file_key"), json.loads(json_str).get("file_name"))
