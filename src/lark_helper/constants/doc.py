@@ -1,8 +1,8 @@
-from enum import Enum
+from enum import StrEnum
 from typing import Optional
 
 
-class DocumentType(Enum):
+class DocumentType(StrEnum):
     DOCX = "docx"
     SHEET = "sheet"
     MINDNOTE = "mindnote"
@@ -36,7 +36,7 @@ class DocumentType(Enum):
         return None
 
 
-class UrlPathType(Enum):
+class UrlPathType(StrEnum):
     FOLDER = "drive/folder"
     FILE = "file"
     DOCX = "docx"
