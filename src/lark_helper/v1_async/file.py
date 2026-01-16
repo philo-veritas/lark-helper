@@ -247,7 +247,7 @@ async def async_get_import_task_result(
 
 
 async def async_batch_get_tmp_download_url(
-    token_manager: TenantAccessTokenManager, file_tokens: list[str]
+    token_manager: TenantAccessTokenManager, file_tokens: list[str], extra: str | None = None
 ) -> list[TmpDownloadUrl]:
     """
     批量获取文件临时下载链接
@@ -266,6 +266,8 @@ async def async_batch_get_tmp_download_url(
     params = {
         "file_tokens": file_tokens,
     }
+    if extra:
+        params["extra"] = extra
     headers = {
         "Authorization": f"Bearer {await token_manager.async_get_tenant_access_token()}",
     }
